@@ -23,8 +23,5 @@ contract Azielcoin {
         require(balances[msg.sender] >= value, "Insufficient balance for transfer");
         balances[msg.sender] -= value;
         balances[to] += value;
-        emit Transfer(msg.sender, to, value);
-        return true;
-    }
-
+        
 }
