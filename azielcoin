@@ -1,0 +1,49 @@
+azielcoin// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Azielcoin {
+    string public tokenName = "Aziel";
+    string public tokenSymbol = "AZL";
+    uint256 public totalSupply;
+
+    mapping(address => uint256) public balances;
+    mapping(address => mapping(address => uint256)) public allowances;
+
+    event Transfer(address from, address to, uint256 value);
+    event Approval(address owner, address spender, uint256 value);
+
+    function createcoin(address account, uint256 value) external {
+        totalSupply += value;
+        balances[account] += value;
+    }
+
+    function destroycoin(address account, uint256 value) external {
+        require(balances[account] >= value, "Insufficient balance to burn");
+        totalSupply -= value;
+        balances[account] -= value;
+    }
+
+    function transfer(address to, uint256 value) external returns (bool) {
+        require(balances[msg.sender] >= value, "Insufficient balance for transfer");
+        balances[msg.sender] -= value;
+        balances[to] += value;
+        emit Transfer(msg.sender, to, value);
+        return true;
+    }
+
+    function approve(address spender, uint256 value) external returns (bool) {
+        allowances[msg.sender][spender] = value;
+        emit Approval(msg.sender, spender, value);
+        return true;
+    }
+
+    function transferFrom(address from, address to, uint256 value) external returns (bool) {
+        require(balances[from] >= value, "Insufficient balance for transfer");
+        require(allowances[from][msg.sender] >= value, "Insufficient allowance for transfer");
+        balances[from] -= value;
+        balances[to] += value;
+        allowances[from][msg.sender] -= value;
+        emit Transfer(from, to, value);
+        return true;
+    }
+}
